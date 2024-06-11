@@ -2,23 +2,20 @@ import React, { useState } from 'react'
 import axios from 'axios';
 import {ThreeDots} from 'react-loader-spinner'
 
-const Upload = () => {
+const UploadImage = () => {
 
-    // const [img, setImg] = useState(null);
-    const [video, setVideo] = useState(null);
+    const [image, setImage] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const uploadFile = async () => { // There was a type parameter
+    const uploadImageFile = async () => { // There was a type parameter
         const data = new FormData();
-        // data.append("file", type === 'image' ? img : video);
-        // data.append("upload_preset", type === 'image' ? 'images_preset' : 'videos_preset');
-        data.append("file", video);
-        data.append("upload_preset", 'videos_preset');
+        data.append("file", image);
+        data.append("upload_preset", 'images_preset');
 
         try {
             let cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
             // let resourceType = type === 'image' ? 'image' : 'video';
-            let resourceType = 'video';
+            let resourceType = 'image';
             let api = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
 
             const res = await axios.post(api, data);
@@ -36,20 +33,14 @@ const Upload = () => {
         try {
             setLoading(true);
 
-            // Upload image file
-            // const imgUrl = await uploadFile('image');
+            const mediaType = "image"
 
-            const mediaType = "video"
-
-            // Upload video file
-            // const videoUrl = await uploadFile('video');
-            const videoUrl = await uploadFile();
+            const videoUrl = await uploadImageFile();
 
             // Get selected gender value
             const gender = document.querySelector('input[name="gender"]:checked').value;
 
             // Get selected age categories
-            // const ageCategories = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
             const ageCategories = Array.from(document.querySelectorAll('input[name="age"]:checked')).map(checkbox => checkbox.value);
 
             // Get selected brand value
@@ -57,12 +48,9 @@ const Upload = () => {
 
 
             // Send backend api requests
-            // await axios.post(`${process.env.REACT_APP_BACKEND_BASEURL}/api/videos`, {imgUrl, videoUrl});
-            await axios.post(`${process.env.REACT_APP_BACKEND_BASEURL}/api/videos`, {videoUrl, mediaType, gender, ageCategories, brands});
+            await axios.post(`${process.env.REACT_APP_BACKEND_BASEURL}/api/images`, {videoUrl, mediaType, gender, ageCategories, brands});
 
-            // Reset states
-            // setImg(null);
-            setVideo(null);
+            setImage(null);
 
             console.log("File uploaded successfully");
             setLoading(false);
@@ -76,18 +64,12 @@ const Upload = () => {
     <div>
         <form onSubmit={handleSubmit}>
             <div>
-                <label htmlFor='video' className='bg-blue-500 text-white p-[5px] m-[10px]'>Video File:</label>
+                <label htmlFor='image' className='bg-blue-500 text-white p-[5px] m-[10px]'>Image File:</label>
                 <br/>
-                <input type='file' accept='video/' id='video' onChange={(e) => setVideo((prev) => e.target.files[0])} className='m-[10px]'/>
+                <input type='file' accept='image/' id='image' onChange={(e) => setImage((prev) => e.target.files[0])} className='m-[10px]'/>
             </div>
 
             <br/>
-
-            {/* <div>
-                <label htmlFor='img'>Image:</label>
-                <br/>
-                <input type='file' accept='image/' id='img' onChange={(e) => setImg((prev) => e.target.files[0])}/>
-            </div> */}
 
             <br/>
             
@@ -161,8 +143,7 @@ const Upload = () => {
             />
         }
     </div>
-    
   )
 }
 
-export default Upload
+export default UploadImage

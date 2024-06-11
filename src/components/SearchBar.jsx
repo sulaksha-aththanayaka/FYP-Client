@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { FaSearch } from "react-icons/fa"
+
 import axios from 'axios'
-import { spawn } from 'child_process';
+
 
 export const SearchBar = ({setUrl}) => {
     const [input, setInput] = useState("");
@@ -18,18 +18,25 @@ export const SearchBar = ({setUrl}) => {
       // });
 
       const response = await axios.post('http://localhost:5000/api/run-python');
-      const { gender, age } = response.data;
-  
-      console.log(gender);
+      const { gender, age, brand } = response.data;
+      // const { gender, age} = response.data;
+
       
+      const ageValue = age.split(' ')[0];
+    
 
       console.log(gender);
-      console.log(age);
+      console.log("This is age: ", ageValue);
+      console.log(brand);
         try {
           const response = await axios.get('http://localhost:5000/api/fetch-videos', {
             params: {
-              gender: gender.toLowerCase()
+              // brand: brand.toLowerCase()
+              gender: gender.toLowerCase(),
+              age: ageValue,
+              brand: brand.toLowerCase()
             }
+            
           });
           const results = response.data;
           console.log(results);
